@@ -1,9 +1,12 @@
-import { userRepo } from '../repositories';
+import { userRepo } from '../repositories'
+import { createQuery } from '../common/mongoose/createQuery'
 
 export const userController = {
     async findAll(req, res, next) {
         try {
-            const users = await userRepo.findAll();
+            const query = userRepo.findAll()
+            const conditions = { populate: '', selects: '-password' }
+            const users = await createQuery(query, conditions)
             return res.status(200).send(users);
         } catch (error) {
             return res.status(500).json({ statusCode: 500, message: error });
@@ -20,12 +23,13 @@ export const userController = {
     },
     async create(req, res, next) {
         const user = req.body;
+
         try {
-            const result = await userRepo.create(user);
-            if (result) {
-                return res.status(200).send(result);
+            const created = await userRepo.create(user);
+            if (created) {
+                return res.status(200).send(created);
             }
-            return res.status(400).json({ statusCode: 400, message: 'Bad request' });
+            return res.status(400).json({ statusCode: 400, message: 'Error - Bad request ...' });
         } catch (error) {
             return res.status(500).json({ statusCode: 500, message: error });
         }

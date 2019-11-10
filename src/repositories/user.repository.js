@@ -8,12 +8,8 @@ export const userRepo = {
             throw error;
         }
     },
-    async findAll() {
-        try {
-            return await userModel.find();
-        } catch (error) {
-            throw error;
-        }
+    findAll() {
+        return userModel.find();
     },
     async findOne(query) {
         try {
