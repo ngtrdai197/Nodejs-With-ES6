@@ -4,7 +4,7 @@ import { compareSync, hashSync, genSaltSync } from 'bcryptjs'
 const userSchema = new mongoose.Schema(
   {
     username: String,
-    password: String,
+    hashedPassword: String,
     fullName: {
       required: true,
       type: String,
@@ -25,22 +25,26 @@ const userSchema = new mongoose.Schema(
   },
 )
 
-userSchema.pre('save', async next => {
-  if (this.isModified('password')) return next()
+userSchema.pre('save', async function save(next) {
   const salt = await genSaltSync(10)
-  await hashSync('this.password', salt)
-  return next()
+  this.hashedPassword = await hashSync(this.hashedPassword, salt)
+  await next()
 })
 
-userSchema.static.hashPassword = async password => {
-  console.log('hashPassword: ' + password)
-
+userSchema.virtual('password').set(function(password) {
+  console.log('virtual: ', password)
+  this.hashedPassword = password
+})
+userSchema.virtual('password').get(function() {
+  return this.hashPassword
+})
+userSchema.methods.hashPassword = async password => {
   const salt = await genSaltSync(10)
   return hashSync(password, salt)
 }
 
-userSchema.statics.validPassword = (password, hashPassword) => {
-  return compareSync(password, hashPassword)
+userSchema.statics.validPassword = async function(password, hashPassword) {
+  return await compareSync(password, hashPassword)
 }
 
 export const userModel = mongoose.model('user', userSchema)

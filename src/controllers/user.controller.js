@@ -14,8 +14,8 @@ export const userController = {
   },
   async findOneById(req, res, next) {
     try {
-      const query = { _id: req.params.id }
-      const users = await userRepo.findOne(query)
+      const users = await userRepo.findOne({ _id: req.params.id })
+      console.log(`user: `, users)
       return res.status(200).send(users)
     } catch (error) {
       return res.status(500).json({ statusCode: 500, message: error })
@@ -23,7 +23,6 @@ export const userController = {
   },
   async create(req, res, next) {
     const user = req.body
-
     try {
       const created = await userRepo.create(user)
       if (created) {
@@ -33,7 +32,9 @@ export const userController = {
         .status(400)
         .json({ statusCode: 400, message: 'Error - Bad request ...' })
     } catch (error) {
-      return res.status(500).json({ statusCode: 500, message: error })
+      // throw error
+      console.log(error)
+      return res.status(500).json({ statusCode: 500, error })
     }
   },
   async update(req, res, next) {

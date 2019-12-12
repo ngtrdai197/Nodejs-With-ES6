@@ -2,8 +2,14 @@ import { userModel } from '../models'
 
 export const userRepo = {
   async create(user) {
+    const { username, password, fullName } = user
     try {
-      return await userModel.create(user)
+      const newUser = new userModel({
+        username,
+        password,
+        fullName,
+      })
+      return await newUser.save()
     } catch (error) {
       throw error
     }

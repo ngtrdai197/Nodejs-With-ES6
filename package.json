@@ -5,7 +5,7 @@
   "author": "Nguyen Dai",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --exec babel-node src/server.js"
+    "start:dev": "nodemon --exec babel-node src/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

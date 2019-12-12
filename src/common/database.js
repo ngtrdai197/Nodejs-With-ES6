@@ -3,7 +3,10 @@ import { constants } from './constants'
 export const connection = async () => {
   const url = `mongodb://localhost:27017/${constants.DB_NAME}`
   try {
-    const result = await mongoose.connect(url, { useNewUrlParser: true })
+    const result = await mongoose.connect(url, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
     if (result) {
       console.log('Database is connected ...')
     }
