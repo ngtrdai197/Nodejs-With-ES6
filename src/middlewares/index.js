@@ -1,1 +1,1 @@
-export * from './validate-token';
+export * from './validate-token'
