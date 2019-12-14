@@ -1,17 +1,31 @@
-import mongoose from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 import { compareSync, hashSync, genSaltSync } from 'bcryptjs'
 
 const userSchema = new mongoose.Schema(
   {
-    username: String,
-    hashedPassword: String,
-    fullName: {
+    username: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    firstName: {
+      required: true,
+      type: String,
+    },
+    lastName: {
       required: true,
       type: String,
     },
     role: {
       type: String,
       default: 'user',
+    },
+    blogIds: {
+      type: [{ type: String, ref: 'blog' }],
+      default: [],
     },
   },
   {
@@ -25,23 +39,37 @@ const userSchema = new mongoose.Schema(
   },
 )
 
-userSchema.pre('save', async function save(next) {
-  const salt = await genSaltSync(10)
-  this.hashedPassword = await hashSync(this.hashedPassword, salt)
-  await next()
+userSchema.virtual('blogs', {
+  ref: 'blog',
+  localField: 'blogIds',
+  foreignField: '_id',
+  justOne: false,
 })
 
-userSchema.virtual('password').set(function(password) {
-  console.log('virtual: ', password)
-  this.hashedPassword = password
+userSchema.virtual('countBlogs', {
+  ref: 'blog',
+  localField: 'blogIds',
+  foreignField: '_id',
+  justOne: false,
+  count: true,
 })
-userSchema.virtual('password').get(function() {
-  return this.hashPassword
+
+userSchema.pre('save', async function save(next) {
+  if (!this.isModified('password')) {
+    return next()
+  }
+  try {
+    const salt = await genSaltSync(10)
+    this.password = await hashSync(this.password, salt)
+    await next()
+  } catch (error) {
+    await next(error)
+  }
 })
-userSchema.methods.hashPassword = async password => {
-  const salt = await genSaltSync(10)
-  return hashSync(password, salt)
-}
+
+userSchema.virtual('fullName').get(function() {
+  return this.firstName + ' ' + this.lastName
+})
 
 userSchema.statics.validPassword = async function(password, hashPassword) {
   return await compareSync(password, hashPassword)

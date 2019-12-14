@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import { userRepo } from '../repositories'
 import { constants } from '../common'
 import { userModel } from '../models/user.model'
 
@@ -7,7 +6,7 @@ export const authController = {
   async signIn(req, res, next) {
     const { username, hashPassword } = req.body
     try {
-      const user = await userRepo.findOne({ username })
+      const user = await userModel.findOne({ username })
       if (!user) {
         return res.status(400).json({
           statusCode: 400,

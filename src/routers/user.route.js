@@ -5,7 +5,9 @@ import { validateToken } from '../middlewares'
 export const routerUser = express.Router()
 
 routerUser.get('/', userController.findAll)
-routerUser.get('/:id', userController.findOneById)
+routerUser.get('/:id', userController.findById)
+routerUser.get('/search/query', userController.findOne)
+
 // routerUser.get('/:id', validateToken(['admin']), userController.findOneById);
 // routerUser.get('/:id', userController.findOneById);
 routerUser.post('/', userController.create)
