@@ -1,7 +1,7 @@
-import mongoose, { Schema } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import { compareSync, hashSync, genSaltSync } from 'bcryptjs'
 
-const userSchema = new mongoose.Schema(
+const userSchema = Schema(
   {
     username: {
       type: String,
@@ -75,4 +75,4 @@ userSchema.statics.validPassword = async function(password, hashPassword) {
   return await compareSync(password, hashPassword)
 }
 
-export const userModel = mongoose.model('user', userSchema)
+export const userModel = model('user', userSchema)
