@@ -4,6 +4,9 @@
   "main": "server.js",
   "author": "Nguyen Dai",
   "license": "MIT",
+  "publishConfig": {
+    "@ngtrdai197:registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "start:dev": "nodemon --exec babel-node src/server.js"
   },
