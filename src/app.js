@@ -12,7 +12,7 @@ app.use(helmet()) // secure your Express app by setting various Http headers
 app.use(cors())
 app.options('*', cors())
 app.use(morgan('dev'))
-connection()
+// connection() TODO: disable db local
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
